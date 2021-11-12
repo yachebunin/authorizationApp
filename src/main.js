@@ -2,17 +2,19 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import vuetify from './plugins/vuetify'
-import { createProvider } from './vue-apollo'
-import 'core-js/stable'; // only stable feature also is possible with only `core-js`
-import 'regenerator-runtime/runtime'; // To ensure that regeneratorRuntime is defined globally
+import { vuetify } from './plugins'
+import VueApollo from 'vue-apollo'
+import apolloClient from '@/services/gql/client.js'
 
 Vue.config.productionTip = false
+
+const apolloProvider = new VueApollo({ defaultClient: apolloClient })
+
 
 new Vue({
   router,
   store,
   vuetify,
-  apolloProvider: createProvider(),
-  render: function (h) { return h(App) }
+  apolloProvider,
+  render: h => h(App)
 }).$mount('#app')
