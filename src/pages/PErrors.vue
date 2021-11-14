@@ -18,9 +18,8 @@ export default {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 100;
-  min-width: 220px;
   transform: translateX(-50%) translateY(-50%);
+  min-width: 220px;
 }
 
 .error {

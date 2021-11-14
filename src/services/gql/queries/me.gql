@@ -1,0 +1,9 @@
+query me {
+   me {
+    id
+    login
+    refreshToken
+    createdAt
+    updatedAt
+  }
+}

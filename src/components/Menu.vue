@@ -1,27 +1,18 @@
 <template>
-  <div class="menu">
-    <v-app-bar color="deep-purple" dark>
-      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-    </v-app-bar>
+  <div>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-    <v-navigation-drawer v-model="drawer" absolute temporary class="popup-menu">
+    <v-navigation-drawer right v-model="drawer" absolute bottom temporary>
       <v-list nav dense>
         <v-list-item-group
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
           <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Log Out</v-list-item-title>
+            <v-list-item-title><v-icon small>mdi-account</v-icon> {{ login }}</v-list-item-title>
           </v-list-item>
-
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>test@mail.ru</v-list-item-title>
+          <v-list-item @click="logOut">
+            <v-list-item-title><v-icon small>mdi-home</v-icon> logOut</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -30,21 +21,25 @@
 </template>
 
 <script>
+import { logOut } from "../services/auth/index";
+
 export default {
-  data: () => ({
-    drawer: false,
-    group: null,
-  }),
+  data() {
+    return {
+      drawer: false,
+      group: null,
+    };
+  },
+  computed: {
+    login() {
+      return this.$parent.$parent.me.login;
+    },
+  },
+  methods: {
+    logOut() {
+      this.$router.push("/signUp");
+      logOut(true);
+    },
+  },
 };
 </script>
-
-<style>
-.menu {
-  margin-bottom: 20px;
-}
-
-.popup-menu {
-  min-height: 398px;
-  z-index: 1000;
-}
-</style>

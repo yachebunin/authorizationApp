@@ -5,6 +5,7 @@ import PSignUp from "../pages/PSignUp.vue";
 import PAccount from "../pages/PAccount.vue";
 import PMembers from "../pages/PMembers.vue";
 import PErrors from "../pages/PErrors.vue";
+import { isAuthenticated } from "../services/auth/index";
 
 Vue.use(VueRouter);
 
@@ -13,6 +14,9 @@ const routes = [
     path: "/",
     name: "Account",
     component: PAccount,
+    beforeEnter: (from, to, next) => {
+      isAuthenticated ? next() : next({ name: "SignIn" });
+    },
   },
   {
     path: "/signUp",
@@ -28,10 +32,12 @@ const routes = [
     path: "/members",
     name: "Members",
     component: PMembers,
+    beforeEnter: (from, to, next) => {
+      isAuthenticated ? next() : next({ path: "/signIn" });
+    },
   },
   {
-    path: "/errors",
-    name: "Errors",
+    path: "*",
     component: PErrors,
   },
 ];

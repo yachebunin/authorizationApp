@@ -1,15 +1,50 @@
 <template>
   <div id="app">
-    <div class="nav">
-      <!-- <router-link to="/">Dashboard</router-link> | 
-      <router-link to="/members">Members</router-link> | 
-      <router-link to="/signUp">Sign Up</router-link> | 
-      <router-link to="/signIn">Sign In</router-link> | 
-      <router-link to="/errors">Errors</router-link> -->
-    </div>
+    <div class="nav" />
     <router-view />
   </div>
 </template>
+
+<script>
+import gql from "graphql-tag";
+
+export default {
+  name: "SignUp",
+  components: {},
+  data() {
+    return {
+      me: {},
+      accounts: {},
+    };
+  },
+  apollo: {
+    me: gql`
+      {
+        me {
+          id
+          login
+          refreshToken
+          createdAt
+          updatedAt
+        }
+      }
+    `,
+    accounts: gql`
+      {
+        accounts {
+          totalCount
+          list {
+            id
+            login
+            createdAt
+            updatedAt
+          }
+        }
+      }
+    `,
+  },
+};
+</script>
 
 <style>
 #app {

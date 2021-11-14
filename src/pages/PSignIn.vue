@@ -24,16 +24,22 @@
     <v-btn :disabled="!valid" class="mr-4 button" @click="validate">
       Sign in
     </v-btn>
+
+    <router-link class="link" to="/signUp">Sign Up</router-link>
   </v-form>
   </div>
 </template>
 
 <script>
+import authenticateMutation from "@/services/gql/mutations/login.gql";
+import { login } from "@/services/auth/index";
+
 export default {
   name: "SignIn",
   components: {},
   data: () => ({
     showPassword: false,
+    fLogin: login,
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => v.length >= 8 || "Min 8 characters",
@@ -50,10 +56,23 @@ export default {
   }),
   methods: {
     validate() {
-      this.$refs.form.validate();
+       this.$refs.form.validate() && this.confirm(this.email, this.password);
     },
     reset() {
       this.$refs.form.reset();
+    },
+    async confirm(login, password) {
+      const response = await this.$apollo.mutate({
+        mutation: authenticateMutation,
+        variables: {
+          login,
+          password,
+        },
+      });
+
+      const authenticate = response.data.authenticate;
+      authenticate.accessToken && this.$router.push("/");
+      this.fLogin(authenticate);
     },
   },
 };
@@ -83,5 +102,10 @@ export default {
 
 .name {
   font-weight: bold;
+}
+
+.link {
+  color: #000;
+  text-decoration: none;
 }
 </style>

@@ -1,24 +1,21 @@
 <template>
-  <div class="members">
+  <div>
     <Menu />
-    <div class="header">
-      <span class="title">Users</span>
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-    </div>
+
+    <v-text-field
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Search"
+      hide-details
+      style="padding: 10px"
+    ></v-text-field>
 
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="members"
       :items-per-page="5"
-      class="elevation-1"
       :search="search"
+      style="text-align: left"
     >
     </v-data-table>
   </div>
@@ -26,55 +23,40 @@
 
 <script>
 import Menu from "../components/Menu.vue";
+import { format } from "date-fns";
 
 export default {
   name: "SignIn",
   components: { Menu },
+  computed: {
+    members() {
+      return (
+        this.$parent.accounts.list &&
+        this.$parent.accounts.list.map((account) => {
+          return {
+            login: account.login,
+            createdAt: format(new Date(account.createdAt), "MM.dd.yyyy"),
+          };
+        })
+      );
+    },
+  },
   data() {
     return {
       search: "",
       headers: [
         {
           text: "Email",
-          align: "start",
           sortable: true,
-          value: "email",
+          value: "login",
         },
         {
           text: "Created At",
-          align: "start",
-          value: "created",
+          value: "createdAt",
           sortable: true,
-        },
-      ],
-      desserts: [
-        {
-          created: "12.07.2021",
-          email: "example@mail.ru",
-        },
-        {
-          created: "31.12.2020",
-          email: "test@mail.ru",
         },
       ],
     };
   },
 };
 </script>
-
-<style scoped>
-.members {
-  position: relative;
-}
-
-.header {
-  display: flex;
-  margin-bottom: 15px;
-  padding: 0px 20px;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-</style>

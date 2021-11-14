@@ -24,18 +24,22 @@
       <v-btn :disabled="!valid" class="mr-4 button" @click="validate">
         Sign Up
       </v-btn>
+
+      <router-link class="link" to="/signIn">Sign In</router-link>
     </v-form>
   </div>
 </template>
 
 <script>
-import registerMutation from "@/services/gql/mutations/register.gql"
+import registerMutation from "@/services/gql/mutations/register.gql";
+import { login } from "@/services/auth/index";
 
 export default {
   name: "SignUp",
   components: {},
   data: () => ({
     showPassword: false,
+    fLogin: login,
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => v.length >= 8 || "Min 8 characters",
@@ -56,15 +60,51 @@ export default {
     reset() {
       this.$refs.form.reset();
     },
-    confirm(login, password) {
-      this.$apollo.mutate({
+    async confirm(login, password) {
+      const response = await this.$apollo.mutate({
         mutation: registerMutation,
         variables: {
           login,
-          password
-        }
-      })
-    }
+          password,
+        },
+      });
+
+      const register = response.data.register;
+      register.accessToken && this.$router.push("/");
+      this.fLogin(register);
+    },
   },
 };
 </script>
+
+<style scoped>
+#form {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+#form > button {
+  align-self: flex-end;
+  max-width: 100px;
+  margin-right: 20px;
+  background: rgb(11, 154, 236);
+  color: #fff;
+}
+
+.title {
+  margin-bottom: 30px;
+  padding: 20px 0px 20px 20px;
+  font-size: 20px;
+  border-bottom: 1px solid #000;
+}
+
+.name {
+  font-weight: bold;
+}
+
+.link {
+  color: #000;
+  text-decoration: none;
+}
+</style>

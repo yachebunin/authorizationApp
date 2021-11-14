@@ -1,0 +1,7 @@
+# import "../types/AuthTokens/fragments/AuthTokens.gql"
+mutation authenticate ($login: String!, $password: String!) {
+   authenticate (login: $login, password: $password) {
+    accessToken
+    refreshToken
+  }
+}

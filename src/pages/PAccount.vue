@@ -1,14 +1,25 @@
 <template>
-  <div class="dashboard">
-    Total Accounts Count: <span class="count">123</span>
+  <div class="dashboard-wrapper">
+    <Menu />
+    <div class="dashboard">
+      Total Accounts Count: <span class="count">{{ totalCount }}</span>
+    </div>
   </div>
 </template>
 
 <script>
+import Menu from "../components/Menu.vue";
+
 export default {
   name: "Account",
-  components: {},
-  methods: {},
+  computed: {
+    totalCount() {
+      return this.$parent.accounts.totalCount;
+    },
+  },
+  components: {
+    Menu,
+  },
 };
 </script>
 
@@ -20,10 +31,9 @@ export default {
   min-width: 300px;
   transform: translateX(-50%) translateY(-50%);
   font-size: 26px;
-  z-index: 100;
 }
 
 .count {
-    font-weight: bold;
+  font-weight: bold;
 }
 </style>
