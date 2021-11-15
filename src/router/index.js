@@ -5,7 +5,7 @@ import PSignUp from "../pages/PSignUp.vue";
 import PAccount from "../pages/PAccount.vue";
 import PMembers from "../pages/PMembers.vue";
 import PErrors from "../pages/PErrors.vue";
-import { isAuthenticated } from "../services/auth/index";
+// import { isAuthenticated } from "../services/auth/index"; doesn't work (I used localStorage.getItem('refreshToken'))
 
 Vue.use(VueRouter);
 
@@ -15,7 +15,7 @@ const routes = [
     name: "Account",
     component: PAccount,
     beforeEnter: (from, to, next) => {
-      isAuthenticated ? next() : next({ name: "SignIn" });
+      localStorage.getItem('refreshToken') ? next() : next({ name: "SignIn" });
     },
   },
   {
@@ -33,7 +33,7 @@ const routes = [
     name: "Members",
     component: PMembers,
     beforeEnter: (from, to, next) => {
-      isAuthenticated ? next() : next({ path: "/signIn" });
+      localStorage.getItem('refreshToken') ? next() : next({ path: "/signIn" });
     },
   },
   {
