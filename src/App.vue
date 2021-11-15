@@ -6,8 +6,6 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
-
 export default {
   name: "SignUp",
   components: {},
@@ -16,32 +14,6 @@ export default {
       me: {},
       accounts: {},
     };
-  },
-  apollo: {
-    me: gql`
-      {
-        me {
-          id
-          login
-          refreshToken
-          createdAt
-          updatedAt
-        }
-      }
-    `,
-    accounts: gql`
-      {
-        accounts {
-          totalCount
-          list {
-            id
-            login
-            createdAt
-            updatedAt
-          }
-        }
-      }
-    `,
   },
 };
 </script>

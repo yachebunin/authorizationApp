@@ -9,16 +9,32 @@
 
 <script>
 import Menu from "../components/Menu.vue";
+import gql from "graphql-tag";
 
 export default {
   name: "Account",
   computed: {
     totalCount() {
-      return this.$parent.accounts.totalCount;
+     return this.accounts ? this.accounts.totalCount : 0
     },
   },
   components: {
     Menu,
+  },
+  apollo: {
+    accounts: gql`
+      {
+        accounts {
+          totalCount
+          list {
+            id
+            login
+            createdAt
+            updatedAt
+          }
+        }
+      }
+    `,
   },
 };
 </script>

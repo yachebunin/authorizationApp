@@ -24,15 +24,32 @@
 <script>
 import Menu from "../components/Menu.vue";
 import { format } from "date-fns";
+import gql from "graphql-tag";
 
 export default {
   name: "SignIn",
   components: { Menu },
+  apollo: {
+    accounts: gql`
+      {
+        accounts {
+          totalCount
+          list {
+            id
+            login
+            createdAt
+            updatedAt
+          }
+        }
+      }
+    `,
+  },
   computed: {
     members() {
       return (
-        this.$parent.accounts.list &&
-        this.$parent.accounts.list.map((account) => {
+        this.accounts &&
+        this.accounts.list &&
+        this.accounts.list.map((account) => {
           return {
             login: account.login,
             createdAt: format(new Date(account.createdAt), "MM.dd.yyyy"),
