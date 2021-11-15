@@ -9,10 +9,14 @@
           active-class="deep-purple--text text--accent-4"
         >
           <v-list-item>
-            <v-list-item-title><v-icon small>mdi-account</v-icon> {{ login }}</v-list-item-title>
+            <v-list-item-title
+              ><v-icon small>mdi-account</v-icon> {{ login }}</v-list-item-title
+            >
           </v-list-item>
           <v-list-item @click="logOut">
-            <v-list-item-title><v-icon small>mdi-home</v-icon> logOut</v-list-item-title>
+            <v-list-item-title
+              ><v-icon small>mdi-home</v-icon> logOut</v-list-item-title
+            >
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -22,6 +26,7 @@
 
 <script>
 import { logOut } from "../services/auth/index";
+import gql from "graphql-tag";
 
 export default {
   data() {
@@ -30,9 +35,22 @@ export default {
       group: null,
     };
   },
+  apollo: {
+    me: gql`
+      {
+        me {
+          id
+          login
+          refreshToken
+          createdAt
+          updatedAt
+        }
+      }
+    `,
+  },
   computed: {
     login() {
-      return this.$parent.$parent.me.login;
+      return this.me && this.me.login;
     },
   },
   methods: {
