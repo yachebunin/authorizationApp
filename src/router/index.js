@@ -15,7 +15,7 @@ const routes = [
     name: "Account",
     component: PAccount,
     beforeEnter: (from, to, next) => {
-      localStorage.getItem('refreshToken') ? next() : next({ name: "SignIn" });
+      localStorage.getItem('refreshToken') ? next() : next({ path: "/signIn" });
     },
   },
   {
