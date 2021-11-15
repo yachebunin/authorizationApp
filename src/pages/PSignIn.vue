@@ -2,31 +2,35 @@
   <div>
     <div class="title"><span class="name">Simple Project</span> | Sign In</div>
     <v-form id="form" ref="form" v-model="valid" lazy-validation>
-    <v-text-field
-      v-model="email"
-      :append-icon="'mdi-email'"
-      :rules="[rules.required, rules.emailMatch]"
-      name="input-email"
-      label="E-mail"
-      required
-    ></v-text-field>
+      <v-text-field
+        v-model="email"
+        :append-icon="'mdi-email'"
+        :rules="[rules.required, rules.emailMatch]"
+        name="input-email"
+        label="E-mail"
+        required
+      ></v-text-field>
 
-    <v-text-field
-      v-model="password"
-      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-      :rules="[rules.required, rules.min]"
-      :type="showPassword ? 'text' : 'password'"
-      name="input-password"
-      label="Password"
-      @click:append="showPassword = !showPassword"
-    ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        :rules="[rules.required, rules.min]"
+        :type="showPassword ? 'text' : 'password'"
+        name="input-password"
+        label="Password"
+        @click:append="showPassword = !showPassword"
+      ></v-text-field>
 
-    <v-btn :disabled="!valid" class="mr-4 button" @click="validate">
-      Sign in
-    </v-btn>
+      <v-btn :disabled="!valid" class="mr-4 button" @click="validate">
+        Sign in
+      </v-btn>
 
-    <router-link class="link" to="/signUp">Sign Up</router-link>
-  </v-form>
+      <router-link class="link" to="/signUp">Sign Up</router-link>
+
+      <v-alert class="error" type="error" v-if="errorMessage != ''">{{
+        errorMessage
+      }}</v-alert>
+    </v-form>
   </div>
 </template>
 
@@ -36,8 +40,8 @@ import { login } from "@/services/auth/index";
 
 export default {
   name: "SignIn",
-  components: {},
   data: () => ({
+    errorMessage: "",
     showPassword: false,
     fLogin: login,
     rules: {
@@ -50,25 +54,31 @@ export default {
     email: "",
     passwordRules: [
       (v) => !!v || "Password is required",
-      (v) =>
-        (v && v.length >= 8) || "Password must be more than 10 characters",
+      (v) => (v && v.length >= 8) || "Password must be more than 10 characters",
     ],
   }),
   methods: {
     validate() {
-       this.$refs.form.validate() && this.confirm(this.email, this.password);
+      this.$refs.form.validate() && this.confirm(this.email, this.password);
     },
     reset() {
       this.$refs.form.reset();
     },
     async confirm(login, password) {
-      const response = await this.$apollo.mutate({
-        mutation: authenticateMutation,
-        variables: {
-          login,
-          password,
-        },
-      });
+      const response = await this.$apollo
+        .mutate({
+          mutation: authenticateMutation,
+          variables: {
+            login,
+            password,
+          },
+        })
+        .catch(() => {
+          this.errorMessage = "Неправильный логин или пароль!";
+          setTimeout(() => {
+            this.errorMessage = "";
+          }, 3000);
+        });
 
       const authenticate = response.data.authenticate;
       authenticate.accessToken && this.$router.push("/");
@@ -107,5 +117,13 @@ export default {
 .link {
   color: #000;
   text-decoration: none;
+}
+
+.error {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  min-width: 300px;
 }
 </style>

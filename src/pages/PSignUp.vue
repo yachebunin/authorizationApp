@@ -26,6 +26,10 @@
       </v-btn>
 
       <router-link class="link" to="/signIn">Sign In</router-link>
+
+      <v-alert class="error" type="error" v-if="errorMessage != ''">{{
+        errorMessage
+      }}</v-alert>
     </v-form>
   </div>
 </template>
@@ -38,6 +42,7 @@ export default {
   name: "SignUp",
   components: {},
   data: () => ({
+    errorMessage: "",
     showPassword: false,
     fLogin: login,
     rules: {
@@ -61,13 +66,20 @@ export default {
       this.$refs.form.reset();
     },
     async confirm(login, password) {
-      const response = await this.$apollo.mutate({
-        mutation: registerMutation,
-        variables: {
-          login,
-          password,
-        },
-      });
+      const response = await this.$apollo
+        .mutate({
+          mutation: registerMutation,
+          variables: {
+            login,
+            password,
+          },
+        })
+        .catch(() => {
+          this.errorMessage = "Такой аккаунт уже существует!";
+          setTimeout(() => {
+            this.errorMessage = "";
+          }, 3000);
+        });
 
       const register = response.data.register;
       register.accessToken && this.$router.push("/");
@@ -106,5 +118,13 @@ export default {
 .link {
   color: #000;
   text-decoration: none;
+}
+
+.error {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  min-width: 300px;
 }
 </style>
